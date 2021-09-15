@@ -403,12 +403,14 @@ blecent_gap_event(struct ble_gap_event *event, void *arg)
             if (strcmp(s, "iobot") == 0) {
                 printf("\nBLE: %s found", s); // uuids16(complete)=0x1803 0x1802 0x1804
                 if (fields.mfg_data != NULL) {
-                    uint16_t tmp = *(uint16_t*)(&fields.mfg_data[5]);
-                    float tmp1 = (float)tmp/10;
-                    printf("\nTemp hex..%d, %.2f", tmp, tmp1);
+                    uint16_t tmp1 = *(uint16_t*)(&fields.mfg_data[5]);
+                    float tmp2 = (float)tmp1/10;
+                    printf("\nTemp hex..%d, %.2f", tmp1, tmp2);
                     printf("\n BLE: TempID/Bat: %02x/%02x", fields.mfg_data[2], fields.mfg_data[3]);
                     printf(" Counter: %02x", fields.mfg_data[4]);
                     printf("\n BLE: Temp: %02x %02x", fields.mfg_data[5], fields.mfg_data[6]);
+                    sprintf(tmp, "Temp:%.2f", tmp2);
+                    wifi_send_mqtt(tmp);
                 }
             }
             if (strcmp(s, "iSensor ") == 0) {

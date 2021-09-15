@@ -117,7 +117,7 @@ void wifi_mqtt_start(void* param) {
         // .user_context = (void *)your_context
     };
     client = esp_mqtt_client_init(&mqtt_cfg);
-    strcpy(mqtt_topic, "aseemsethi");
+    strcpy(mqtt_topic, "pmoa");
 
     ESP_ERROR_CHECK(esp_mqtt_client_start(client));
     ESP_LOGI(TAG,"\n wifi_mqtt_start: Wifi connected..starting MQTT");
