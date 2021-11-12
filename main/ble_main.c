@@ -399,7 +399,7 @@ blecent_gap_event(struct ble_gap_event *event, void *arg)
             char s[BLE_HS_ADV_MAX_SZ]; // 31 Bytes
             memcpy(s, fields.name, fields.name_len);
             s[fields.name_len] = '\0';
-            printf("\nBLE Name: %s:%d", s, strlen(s));
+            //printf("\nBLE Name: %s:%d", s, strlen(s));
             if (strcmp(s, "iobot") == 0) {
                 printf("\nBLE: %s found", s); // uuids16(complete)=0x1803 0x1802 0x1804
                 if (fields.mfg_data != NULL) {

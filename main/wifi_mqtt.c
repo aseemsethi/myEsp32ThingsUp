@@ -9,6 +9,8 @@ extern const int CONNECTED_BIT;
 char mqtt_topic[100];
 extern int mqtt;
 extern char gDevIP[];
+extern tcpip_adapter_ip_info_t ip_info;
+
 
 static const char *TAG = "wifi mqtt";
 esp_mqtt_client_handle_t client;
@@ -67,7 +69,8 @@ void wifi_send_mqtt(char* msg) {
 
     time(&now);
     localtime_r(&now, &timeinfo);
-    strftime(strftime_buf, sizeof(strftime_buf), "%c", &timeinfo);
+    //"%c"
+    strftime(strftime_buf, sizeof(strftime_buf),  "%H:%M:%S", &timeinfo);
     ESP_LOGI(TAG, "The current date/time : %s", strftime_buf);
     strcat(temp, strftime_buf);
 
@@ -78,6 +81,9 @@ void wifi_send_mqtt(char* msg) {
 	int msg_id = esp_mqtt_client_publish(client, mqtt_topic, temp, 0, 0, 0);
 	ESP_LOGI(TAG, "\nwifi_send_mqtt: MQTT Msg: %s : to %s , with id: %d !!!", 
 						temp, mqtt_topic, msg_id);
+    oledClear(); 
+    oledDisplay(7, 15, msg);
+    oledDisplay(7, 25, (char *)(ip4addr_ntoa(&ip_info.ip)));
 }
 
 // String is of format "Thu Aug  8 06:57:45 2019"

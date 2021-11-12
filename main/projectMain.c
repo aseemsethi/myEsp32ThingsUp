@@ -14,6 +14,7 @@ EventGroupHandle_t s_wifi_event_group;
 const int WIFI_CONNECTED_BIT = BIT0;
 const int WIFI_FAIL_BIT = BIT1;
 char gDevIP[60];
+tcpip_adapter_ip_info_t ip_info;
 
 wifi_config_t wifi_config = {
     .sta = {
@@ -157,7 +158,6 @@ void app_main(void)
 static void event_handler(void* arg, esp_event_base_t event_base,
                                 int32_t event_id, void* event_data)
 {
-    tcpip_adapter_ip_info_t ip_info;
     //ESP_LOGI(TAG, "event_handler eventid: %d", event_id);
     if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START) {
         ESP_LOGI(TAG,"WIFI_EVENT_STA_START recvd");
