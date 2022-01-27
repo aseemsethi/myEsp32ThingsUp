@@ -7,6 +7,7 @@
    CONDITIONS OF ANY KIND, either express or implied.
 */
 #include "common.h"
+#include "esp_system.h"
 static void event_handler(void* arg, esp_event_base_t event_base, 
                                 int32_t event_id, void* event_data);
 
@@ -15,6 +16,7 @@ const int WIFI_CONNECTED_BIT = BIT0;
 const int WIFI_FAIL_BIT = BIT1;
 char gDevIP[60];
 tcpip_adapter_ip_info_t ip_info;
+uint8_t chipid[6] = {0};
 
 wifi_config_t wifi_config = {
     .sta = {
@@ -86,10 +88,15 @@ void wifi_init_sta(void)
     //vEventGroupDelete(s_wifi_event_group);
 }
 
+
 void app_main(void)
 {
     printf("Hello world!\n");
     esp_log_level_set("wifi", ESP_LOG_WARN);
+    ESP_ERROR_CHECK(esp_read_mac(chipid, ESP_MAC_WIFI_STA));
+    printf("%02x:%02x:%02x:%02x:%02x:%02x\n",
+        chipid[0], chipid[1], chipid[2], chipid[3], chipid[4], chipid[5]);
+
 
     /* Print chip information */
     esp_chip_info_t chip_info;

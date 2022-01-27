@@ -10,7 +10,7 @@ char mqtt_topic[100];
 extern int mqtt;
 extern char gDevIP[];
 extern tcpip_adapter_ip_info_t ip_info;
-
+extern uint8_t chipid[6];
 
 static const char *TAG = "wifi mqtt";
 esp_mqtt_client_handle_t client;
@@ -58,18 +58,22 @@ static esp_err_t mqtt_event_handler(esp_mqtt_event_handle_t event)
     return ESP_OK;
 }
 
-void wifi_send_mqtt(char* msg) {
-    time_t now;
-    struct tm timeinfo;
-    char strftime_buf[64];
-    char temp[200];
+void wifi_send_mqtt(char* sensorid, char* msg) {
+    //time_t now;
+    //struct tm timeinfo;
+    //char strftime_buf[64];
+    //char temp[200];
+    char temp1[200];
 
-    strcpy(temp, msg);
+    sprintf(temp1, "{\"gwid\":\"%2x%2x%2x\", \"sensorid\":\"%s\", \"data\":\"%s\"}", 
+        chipid[0], chipid[1], chipid[2], sensorid, msg);  
+
+    /*
+    strcat(temp, msg);
     strcat(temp, " : ");
 
     time(&now);
     localtime_r(&now, &timeinfo);
-    //"%c"
     strftime(strftime_buf, sizeof(strftime_buf),  "%H:%M:%S", &timeinfo);
     ESP_LOGI(TAG, "The current date/time : %s", strftime_buf);
     strcat(temp, strftime_buf);
@@ -77,10 +81,11 @@ void wifi_send_mqtt(char* msg) {
     strcat(temp, ":");
     strcat(temp, gDevIP); 
     strcat(temp, ":");
+    */
 
-	int msg_id = esp_mqtt_client_publish(client, mqtt_topic, temp, 0, 0, 0);
-	ESP_LOGI(TAG, "\nwifi_send_mqtt: MQTT Msg: %s : to %s , with id: %d !!!", 
-						temp, mqtt_topic, msg_id);
+	int msg_id = esp_mqtt_client_publish(client, mqtt_topic, temp1, 0, 0, 0);
+	ESP_LOGI(TAG, "\nwifi_send_mqtt: %s on topic %s , with id: %d !!!", 
+						temp1, mqtt_topic, msg_id);
     oledClear(); 
     oledDisplay(7, 15, msg);
     oledDisplay(7, 25, (char *)(ip4addr_ntoa(&ip_info.ip)));
@@ -117,17 +122,21 @@ void wifi_mqtt_start(void* param) {
     char strftime_buf[64];
 
     const esp_mqtt_client_config_t mqtt_cfg = {
-        .uri = "mqtt://mqtt.eclipseprojects.io/",
+        //.uri = "mqtt://mqtt.eclipseprojects.io/",
+        .host = "52.66.70.168",
         .port = 1883,
+        .username = "draadmin",
+        .password = "DRAAdmin@123",
         .event_handle = mqtt_event_handler,
         // .user_context = (void *)your_context
     };
+
     client = esp_mqtt_client_init(&mqtt_cfg);
-    strcpy(mqtt_topic, "pmoa");
+    strcpy(mqtt_topic, "gurupada/data/100");
 
     ESP_ERROR_CHECK(esp_mqtt_client_start(client));
     ESP_LOGI(TAG,"\n wifi_mqtt_start: Wifi connected..starting MQTT");
-    wifi_send_mqtt("WiFi is up...");
+    //wifi_send_mqtt("WiFi is up...");
     if (timeSet == pdFALSE) {
         ESP_LOGI(TAG, "\n Trying to get time from NTP");
         timeSet = pdTRUE;

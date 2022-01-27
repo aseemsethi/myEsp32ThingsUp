@@ -32,7 +32,7 @@
 static const char *tag = "NimBLE_BLE_CENT";
 static const char *TAG = "BLE";
 static int blecent_gap_event(struct ble_gap_event *event, void *arg);
-void wifi_send_mqtt(char*);
+void wifi_send_mqtt(char*, char*);
 //static uint8_t peer_addr[6];
 
 void ble_store_config_init(void);
@@ -412,7 +412,7 @@ blecent_gap_event(struct ble_gap_event *event, void *arg)
                     printf(" Counter: %02x", fields.mfg_data[4]);
                     printf("\n BLE: Temp: %02x %02x", fields.mfg_data[5], fields.mfg_data[6]);
                     sprintf(tmp, "Temp:%.2f:Humid:%.2f", tmpT2, tmpH2);
-                    wifi_send_mqtt(tmp);
+                    wifi_send_mqtt("0000", tmp);
                 }
             }
             if (strcmp(s, "iSensor ") == 0) {
@@ -441,7 +441,7 @@ blecent_gap_event(struct ble_gap_event *event, void *arg)
                         sprintf(tmp, "Door:%s:Closed", buff);
                         ESP_LOGI(TAG, "\nBLE: Door No Alarm: %02x/%02x\n", typeid, eventData);                        
                     }
-                    wifi_send_mqtt(tmp);
+                    wifi_send_mqtt(buff, tmp);
                 }
             }
         }
