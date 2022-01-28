@@ -11,20 +11,24 @@ extern int mqtt;
 extern char gDevIP[];
 extern tcpip_adapter_ip_info_t ip_info;
 extern uint8_t chipid[6];
+extern char gwid[];
 
 static const char *TAG = "wifi mqtt";
 esp_mqtt_client_handle_t client;
 
 static esp_err_t mqtt_event_handler(esp_mqtt_event_handle_t event)
 {
-    // esp_mqtt_client_handle_t client = event->client;
-    // int msg_id;
+    esp_mqtt_client_handle_t client = event->client;
+    int msg_id;
     // your_context_t *context = event->context;
+    char temp[30];
     switch (event->event_id) {
         case MQTT_EVENT_CONNECTED:
             ESP_LOGI(TAG, "MQTT_EVENT_CONNECTED");
-            //msg_id = esp_mqtt_client_subscribe(client, "/topic99", 0);
-            //ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id);
+            sprintf(temp, "gurupada/%s/data", gwid);
+            printf("\n !!!!!!!!!!!!! Subscribing to %s", temp);
+            msg_id = esp_mqtt_client_subscribe(client, temp, 0);
+            ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id);
             break;
         case MQTT_EVENT_DISCONNECTED:
             //ESP_LOGI(TAG, "MQTT_EVENT_DISCONNECTED");
@@ -132,7 +136,7 @@ void wifi_mqtt_start(void* param) {
     };
 
     client = esp_mqtt_client_init(&mqtt_cfg);
-    strcpy(mqtt_topic, "gurupada/data/100");
+    sprintf(mqtt_topic, "gurupada/data/%s", gwid);
 
     ESP_ERROR_CHECK(esp_mqtt_client_start(client));
     ESP_LOGI(TAG,"\n wifi_mqtt_start: Wifi connected..starting MQTT");

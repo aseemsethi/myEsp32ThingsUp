@@ -434,11 +434,13 @@ blecent_gap_event(struct ble_gap_event *event, void *arg)
                     // Frame Numbers
                     // eventData > 0 - door open
                     if (eventData == 2) {
-                        sprintf(tmp, "Door:%s:Open", buff);
+                        //sprintf(tmp, "Door:%s:Open", buff);
+                        sprintf(tmp, "Open");
                         ESP_LOGI(TAG, "\nBLE: Door Alarm: %02x/%02x\n", typeid, eventData);
                     }
                     else {
-                        sprintf(tmp, "Door:%s:Closed", buff);
+                        //sprintf(tmp, "Door:%s:Closed", buff);
+                        sprintf(tmp, "Close");
                         ESP_LOGI(TAG, "\nBLE: Door No Alarm: %02x/%02x\n", typeid, eventData);                        
                     }
                     wifi_send_mqtt(buff, tmp);

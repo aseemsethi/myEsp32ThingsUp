@@ -17,6 +17,7 @@ const int WIFI_FAIL_BIT = BIT1;
 char gDevIP[60];
 tcpip_adapter_ip_info_t ip_info;
 uint8_t chipid[6] = {0};
+char gwid[10];
 
 wifi_config_t wifi_config = {
     .sta = {
@@ -96,7 +97,7 @@ void app_main(void)
     ESP_ERROR_CHECK(esp_read_mac(chipid, ESP_MAC_WIFI_STA));
     printf("%02x:%02x:%02x:%02x:%02x:%02x\n",
         chipid[0], chipid[1], chipid[2], chipid[3], chipid[4], chipid[5]);
-
+    sprintf(gwid, "%2x%2x%2x", chipid[0], chipid[1], chipid[2]);
 
     /* Print chip information */
     esp_chip_info_t chip_info;
