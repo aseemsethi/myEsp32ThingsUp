@@ -381,6 +381,7 @@ blecent_gap_event(struct ble_gap_event *event, void *arg)
     struct ble_hs_adv_fields fields;
     int rc;
     char tmp[50]; 
+    char sensorId[14];
 
     switch (event->type) {
     case BLE_GAP_EVENT_DISC:
@@ -390,8 +391,22 @@ blecent_gap_event(struct ble_gap_event *event, void *arg)
             return 0;
         }
 
+/*
+    name(complete)=iobot
+    mfg_data=
+    0x59:0x00:
+    0x04:0x64: - tempid, battery
+    0xc2:  - counter
+    0xfc:0x00: - temp
+    0xd0:0x02: - humidity
+    0x00:0x00:0x00:0x00:0x00:0x00:0x00:0x00:0x00:0x00:0x00:0x00
+
+    addr=54 98 5c ef 3a d1
+    BLE: iobot found
+    Temp 252, 25.20, Humidity: 72.00
+    BLE: TempID/Bat: 04/64 Counter: c2
+ */
         /* An advertisment report was received during GAP discovery. */
-        print_adv_fields(&fields);
         // Interesting for us - fields->mfg_data, fields->mfg_data_len
         // Data points to just after the FF. Data len is data after FF
         // Also, BLE_HS_ADV_TYPE_INCOMP_NAME (Type=9) carries the name
@@ -401,7 +416,16 @@ blecent_gap_event(struct ble_gap_event *event, void *arg)
             s[fields.name_len] = '\0';
             //printf("\nBLE Name: %s:%d", s, strlen(s));
             if (strcmp(s, "iobot") == 0) {
-                printf("\nBLE: %s found", s); // uuids16(complete)=0x1803 0x1802 0x1804
+                print_adv_fields(&fields);
+                printf("\n addr=%x %x %x %x %x %x", 
+                    event->disc.addr.val[0],event->disc.addr.val[1],event->disc.addr.val[2],
+                    event->disc.addr.val[3],event->disc.addr.val[4],event->disc.addr.val[5]);
+                sprintf(sensorId, "%02x%02x%02x%02x%02x%02x", 
+                    event->disc.addr.val[0],event->disc.addr.val[1],event->disc.addr.val[2],
+                    event->disc.addr.val[3],event->disc.addr.val[4],event->disc.addr.val[5]);
+                //memcpy(sensorId, event->disc.addr.val, 6);
+                sensorId[6] = '\0';
+                printf("\nBLE: %s found, with addr: %s", s, sensorId);
                 if (fields.mfg_data != NULL) {
                     uint16_t tmpT = *(uint16_t*)(&fields.mfg_data[5]);
                     uint16_t tmpH = *(uint16_t*)(&fields.mfg_data[7]);
@@ -412,7 +436,7 @@ blecent_gap_event(struct ble_gap_event *event, void *arg)
                     printf(" Counter: %02x", fields.mfg_data[4]);
                     printf("\n BLE: Temp: %02x %02x", fields.mfg_data[5], fields.mfg_data[6]);
                     sprintf(tmp, "Temp:%.2f:Humid:%.2f", tmpT2, tmpH2);
-                    wifi_send_mqtt("0000", tmp);
+                    wifi_send_mqtt(sensorId, tmp);
                 }
             }
             if (strcmp(s, "iSensor ") == 0) {

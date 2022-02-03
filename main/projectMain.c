@@ -132,6 +132,9 @@ void app_main(void)
     TickType_t xDelay = 500 / portTICK_PERIOD_MS;
     vTaskDelay(xDelay);
 
+    TaskHandle_t cloudHandle = NULL;
+    xTaskCreate(cloudProcess, "Cloud Task", 4096, NULL, 1, cloudHandle);
+
     // file to setup an INTR to clear WiFi NVS storage
     // On standard ESP32:
     // Boot button is connected to GPIO0 and pressing that, erases the WiFi storage

@@ -19,6 +19,7 @@
 #include <esp_http_server.h>
 #include "esp_smartconfig.h"
 
+
 #include "esp_spi_flash.h"
 #include "esp_log.h"  // for ESP_LOGE
 
@@ -34,3 +35,4 @@ void ble_main(void);
 void wifi_mqtt_start(void*);
 void wifi_send_mqtt(char*, char*);
 int hextodc(char *hex);
+void cloudProcess(void*);
