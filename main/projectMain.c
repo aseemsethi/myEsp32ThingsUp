@@ -126,15 +126,7 @@ void app_main(void)
     }
     ESP_ERROR_CHECK(ret);
 
-    ESP_LOGI(TAG, "ESP_WIFI_MODE_STA");
-    wifi_init_sta();
-    /* Block for 500ms. */
-    TickType_t xDelay = 500 / portTICK_PERIOD_MS;
-    vTaskDelay(xDelay);
-
-    TaskHandle_t cloudHandle = NULL;
-    xTaskCreate(cloudProcess, "Cloud Task", 4096, NULL, 1, cloudHandle);
-
+    printf("\n Setting up boot button");
     // file to setup an INTR to clear WiFi NVS storage
     // On standard ESP32:
     // Boot button is connected to GPIO0 and pressing that, erases the WiFi storage
@@ -154,9 +146,20 @@ void app_main(void)
     io_conf.pull_up_en = 0;
     gpio_config(&io_conf);
 
+    ESP_LOGI(TAG, "ESP_WIFI_MODE_STA");
+    wifi_init_sta();
+    /* Block for 500ms. */
+    TickType_t xDelay = 500 / portTICK_PERIOD_MS;
+    vTaskDelay(xDelay);
+
+    TaskHandle_t cloudHandle = NULL;
+    xTaskCreate(cloudProcess, "Cloud Task", 4096, NULL, 1, cloudHandle);
+
     while(1) {
+        //int lvl = 0;
         TickType_t xDelay = 500 / portTICK_PERIOD_MS;
         vTaskDelay(xDelay);
+        printf("#");
         
         lvl=gpio_get_level(22);
         if (lvl == 1) {
@@ -197,6 +200,11 @@ static void event_handler(void* arg, esp_event_base_t event_base,
     } else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED) {
         ESP_LOGI(TAG,"WIFI_EVENT_STA_DISCONNECTED recvd");
         oledClear();  oledDisplay(7, 10, "DisConnected:"); 
+        int lvl=gpio_get_level(22);
+        if (lvl == 1) {
+            printf("\n Disconnected: Boot button pressed - erase flash !!!");
+            nvs_flash_erase();
+        }
         //if (s_retry_num < EXAMPLE_ESP_MAXIMUM_RETRY) {
             esp_wifi_connect();
         //    s_retry_num++;

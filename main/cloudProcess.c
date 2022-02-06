@@ -28,7 +28,7 @@ void cloudProcess(void* param) {
         chipid[0], chipid[1], chipid[2], ip4addr_ntoa(&ip_info.ip));
 
         int msg_id = esp_mqtt_client_publish(client, "gurupada/gw/add", temp1, 0, 0, 0);
-        ESP_LOGI(TAG, "\ncloudProcess: %s on topic gurupada/gw/add , with id: %d !!!", 
+        ESP_LOGI(TAG, "\ncloudProcess: %s on topic gurupada/gw/add , with id: %d !!!!!!!!!!!", 
                         temp1, msg_id);
     }
 }

@@ -435,7 +435,7 @@ blecent_gap_event(struct ble_gap_event *event, void *arg)
                     printf("\n BLE: TempID/Bat: %02x/%02x", fields.mfg_data[2], fields.mfg_data[3]);
                     printf(" Counter: %02x", fields.mfg_data[4]);
                     printf("\n BLE: Temp: %02x %02x", fields.mfg_data[5], fields.mfg_data[6]);
-                    sprintf(tmp, "Temp:%.2f:Humid:%.2f", tmpT2, tmpH2);
+                    sprintf(tmp, "T:%.2f:H:%.2f", tmpT2, tmpH2);
                     wifi_send_mqtt(sensorId, tmp);
                 }
             }
