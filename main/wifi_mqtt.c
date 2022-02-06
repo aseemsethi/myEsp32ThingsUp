@@ -63,25 +63,23 @@ static esp_err_t mqtt_event_handler(esp_mqtt_event_handle_t event)
 }
 
 void wifi_send_mqtt(char* sensorid, char* msg) {
-    //time_t now;
-    //struct tm timeinfo;
-    //char strftime_buf[64];
+    time_t now;
+    struct tm timeinfo;
+    char strftime_buf[64];
     //char temp[200];
     char temp1[200];
-
-    sprintf(temp1, "{\"gwid\":\"%2x%2x%2x\", \"sensorid\":\"%s\", \"data\":\"%s\"}", 
-        chipid[0], chipid[1], chipid[2], sensorid, msg);  
-
-    /*
-    strcat(temp, msg);
-    strcat(temp, " : ");
 
     time(&now);
     localtime_r(&now, &timeinfo);
     strftime(strftime_buf, sizeof(strftime_buf),  "%H:%M:%S", &timeinfo);
+
+    sprintf(temp1, 
+        "{\"gwid\":\"%2x%2x%2x\", \"sensorid\":\"%s\", \"data\":\"%s\",\"time\":\"%s\"}", 
+        chipid[0], chipid[1], chipid[2], sensorid, msg, strftime_buf);  
+
+    /*
     ESP_LOGI(TAG, "The current date/time : %s", strftime_buf);
     strcat(temp, strftime_buf);
-
     strcat(temp, ":");
     strcat(temp, gDevIP); 
     strcat(temp, ":");
