@@ -452,22 +452,32 @@ blecent_gap_event(struct ble_gap_event *event, void *arg)
                         fields.mfg_data[2], fields.mfg_data[3]);
                     printf("\n TAG: %s", buff);
                     int typeid = fields.mfg_data[4] & 0x3F; // this is 0x6 for Door, low 6 bits
-                    int eventData = fields.mfg_data[5] & 0x02; 
-                    // bit1 is 1 for alarm for Door Sensor
-                    // fields.mfg_data[6] and fields.mfg_data[7] are ControlData denoting 
-                    // Frame Numbers
-                    // eventData > 0 - door open
-                    if (eventData == 2) {
-                        //sprintf(tmp, "Door:%s:Open", buff);
-                        sprintf(tmp, "Open");
-                        ESP_LOGI(TAG, "\nBLE: Door Alarm: %02x/%02x\n", typeid, eventData);
+                    if (typeid == 0x06) {
+                        // IM24_BLE
+                        printf("\nBLE is Door iSensor");
+                        int eventData = fields.mfg_data[5] & 0x02; 
+                        // bit1 is 1 for alarm for Door Sensor
+                        // fields.mfg_data[6] and fields.mfg_data[7] are ControlData denoting 
+                        // Frame Numbers
+                        // eventData > 0 - door open
+                        if (eventData == 2) {
+                            sprintf(tmp, "Open");
+                            ESP_LOGI(TAG, "\nBLE: Door Alarm: %02x/%02x\n", typeid, eventData);
+                        } else {
+                            sprintf(tmp, "Close");
+                            ESP_LOGI(TAG, "\nBLE: Door No Alarm: %02x/%02x\n", typeid, eventData);                        
+                        }
+                        wifi_send_mqtt(buff, tmp);
+                    } else if (typeid == 0xc) {
+                        // ET 90
+                        int temp = fields.mfg_data[8]; 
+                        int hum = fields.mfg_data[10]; 
+                        printf("\nBLE is Temp iSensor: %02x:%02x", temp, hum);
+                        sprintf(tmp, "T-hex:%02x:H-hex:%02x", temp, hum);
+                        wifi_send_mqtt(buff, tmp);
+                    } else {
+                        printf("\nBLE Type Id = %x", typeid);
                     }
-                    else {
-                        //sprintf(tmp, "Door:%s:Closed", buff);
-                        sprintf(tmp, "Close");
-                        ESP_LOGI(TAG, "\nBLE: Door No Alarm: %02x/%02x\n", typeid, eventData);                        
-                    }
-                    wifi_send_mqtt(buff, tmp);
                 }
             }
         }
