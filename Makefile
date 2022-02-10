@@ -4,5 +4,7 @@
 #
 
 PROJECT_NAME := hello-world
+EXTRA_COMPONENT_DIRS := ../esp-idf-lib/components
+
 
 include $(IDF_PATH)/make/project.mk

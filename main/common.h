@@ -36,3 +36,4 @@ void wifi_mqtt_start(void*);
 void wifi_send_mqtt(char*, char*);
 int hextodc(char *hex);
 void cloudProcess(void*);
+void i2c_start();

@@ -5,7 +5,13 @@
    Unless required by applicable law or agreed to in writing, this
    software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
    CONDITIONS OF ANY KIND, either express or implied.
+For INA129 - 
+Download this library at a directory and include this in 
+extra components
+https://github.com/UncleRus/esp-idf-lib
+git clone https://github.com/UncleRus/esp-idf-lib.git
 */
+
 #include "common.h"
 #include "esp_system.h"
 static void event_handler(void* arg, esp_event_base_t event_base, 
@@ -154,6 +160,7 @@ void app_main(void)
 
     TaskHandle_t cloudHandle = NULL;
     xTaskCreate(cloudProcess, "Cloud Task", 4096, NULL, 1, cloudHandle);
+    //i2c_start();
 
     while(1) {
         //int lvl = 0;
