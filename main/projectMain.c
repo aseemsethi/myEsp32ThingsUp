@@ -141,16 +141,18 @@ void app_main(void)
     wifi_eraseconfig(); 
     vTaskDelay(2000 / portTICK_PERIOD_MS);
 
+/*
     int lvl=0;
-    gpio_pad_select_gpio(22); // Boot button
-    gpio_set_direction(22, GPIO_MODE_INPUT);
+    gpio_pad_select_gpio(0); // Boot button
+    gpio_set_direction(0, GPIO_MODE_INPUT);
     gpio_config_t io_conf;
     io_conf.intr_type = GPIO_PIN_INTR_DISABLE;
     io_conf.mode = GPIO_MODE_INPUT;
-    io_conf.pin_bit_mask = (1<<22);
+    io_conf.pin_bit_mask = (1<<0);
     io_conf.pull_down_en = 1;
     io_conf.pull_up_en = 0;
     gpio_config(&io_conf);
+    */
 
     ESP_LOGI(TAG, "ESP_WIFI_MODE_STA");
     wifi_init_sta();
@@ -167,12 +169,13 @@ void app_main(void)
         TickType_t xDelay = 500 / portTICK_PERIOD_MS;
         vTaskDelay(xDelay);
         printf("#");
-        
-        lvl=gpio_get_level(22);
+        /*
+        lvl=gpio_get_level(0); // this is GPIO pin
         if (lvl == 1) {
-            printf("\n Boot button pressed - erase flash !!!");
+            printf("\n Boot button pressed - erase flash !!");
             nvs_flash_erase();
         }
+        */
     }
 }
 
@@ -207,11 +210,13 @@ static void event_handler(void* arg, esp_event_base_t event_base,
     } else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED) {
         ESP_LOGI(TAG,"WIFI_EVENT_STA_DISCONNECTED recvd");
         oledClear();  oledDisplay(7, 10, "DisConnected:"); 
-        int lvl=gpio_get_level(22);
+        /*
+        int lvl=gpio_get_level(0);
         if (lvl == 1) {
             printf("\n Disconnected: Boot button pressed - erase flash !!!");
             nvs_flash_erase();
         }
+        */
         //if (s_retry_num < EXAMPLE_ESP_MAXIMUM_RETRY) {
             esp_wifi_connect();
         //    s_retry_num++;

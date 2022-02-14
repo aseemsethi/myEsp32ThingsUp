@@ -1,6 +1,10 @@
+// Example from
+// https://github.com/UncleRus/esp-idf-lib/blob/master/examples/ina219/main/main.c
+
 #include <stdio.h>
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
+
 #include <ina219.h>
 #include <string.h>
 #include <esp_log.h>
@@ -22,9 +26,16 @@ void i2cTask(void *pvParameters)
     ina219_t dev;
     memset(&dev, 0, sizeof(ina219_t));
 
-    ESP_ERROR_CHECK(ina219_init_desc(&dev, I2C_ADDR, I2C_PORT, 5, 4));
+    // SDA, SCL - 5,4 - SDA_GPIO, SCL_GPIO, 21, 22
+    ESP_ERROR_CHECK(ina219_init_desc(&dev, I2C_ADDR, I2C_PORT, 21, 22));
     ESP_LOGI(TAG, "Initializing INA219");
-    ESP_ERROR_CHECK(ina219_init(&dev));
+    //ESP_ERROR_CHECK(ina219_init(&dev));
+    if (ina219_init(&dev) != ESP_OK) {
+        ESP_LOGI(TAG, "init INA219...failed !!!!!!!!1");
+        while (1) {
+            vTaskDelay(pdMS_TO_TICKS(5000));
+        }
+    }
 
     ESP_LOGI(TAG, "Configuring INA219");
     ESP_ERROR_CHECK(ina219_configure(&dev, INA219_BUS_RANGE_16V, INA219_GAIN_0_125,
