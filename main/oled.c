@@ -10,11 +10,11 @@
 #include "sdkconfig.h"
 #include "u8g2_esp32_hal.h"
 
-// SDA - GPIO21 - D4
-#define PIN_SDA 5
+#define PIN_SDA 26 
+// 5  26 is for new oled- vcc, gnd, scl, sda
 
-// SCL - GPIO22 - D5
-#define PIN_SCL 4
+#define PIN_SCL 25 
+// 4
 
 bool oled_attached = true;
 
@@ -35,7 +35,7 @@ void task_test_SSD1306i2c(void *ignore) {
 		u8g2_esp32_i2c_byte_cb,
 		u8g2_esp32_gpio_and_delay_cb);  // init u8g2 structure
 
-	u8x8_SetI2CAddress(&u8g2.u8x8,0x78);
+	u8x8_SetI2CAddress(&u8g2.u8x8, 0x78);
 
 	ESP_LOGI(TAG, "u8g2_InitDisplay");
 	u8g2_InitDisplay(&u8g2); // send init sequence to the display, display is in sleep mode after this,
