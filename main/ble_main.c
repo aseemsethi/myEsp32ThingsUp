@@ -452,6 +452,7 @@ blecent_gap_event(struct ble_gap_event *event, void *arg)
                         fields.mfg_data[2], fields.mfg_data[3]);
                     printf("\n TAG: %s", buff);
                     int typeid = fields.mfg_data[4] & 0x3F; // this is 0x6 for Door, low 6 bits
+                    //Comment
                     if (typeid == 0x06) {
                         // IM24_BLE
                         printf("\nBLE is Door iSensor");
