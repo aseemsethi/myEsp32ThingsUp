@@ -71,7 +71,7 @@ void wifi_send_mqtt(char* sensorid, char* msg) {
 
     time(&now);
     localtime_r(&now, &timeinfo);
-    strftime(strftime_buf, sizeof(strftime_buf),  "%H:%M:%S", &timeinfo);
+    strftime(strftime_buf, sizeof(strftime_buf),  "%H:%M:%S-%d/%m", &timeinfo);
 
     sprintf(temp1, 
         "{\"gwid\":\"%2x%2x%2x\", \"sensorid\":\"%s\", \"data\":\"%s\",\"time\":\"%s\"}", 
