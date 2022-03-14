@@ -24,8 +24,9 @@ void cloudProcess(void* param) {
     while(1) {
         TickType_t xDelay = 120 * 1000 / portTICK_PERIOD_MS;
         vTaskDelay(xDelay);
-        sprintf(temp1, "{\"gwid\":\"%2x%2x%2x\", \"type\":\"esp32\", \"ip\":\"%s\"}", 
-        chipid[0], chipid[1], chipid[2], ip4addr_ntoa(&ip_info.ip));
+        sprintf(temp1, "{\"gwid\":\"%2x%2x%2x%2x%2x%2x\", \"type\":\"esp32\", \"ip\":\"%s\"}", 
+        chipid[0], chipid[1], chipid[2], chipid[3], chipid[4], chipid[5],
+        ip4addr_ntoa(&ip_info.ip));
 
         int msg_id = esp_mqtt_client_publish(client, "gurupada/gw/add", temp1, 0, 0, 0);
         ESP_LOGI(TAG, "\ncloudProcess: %s on topic gurupada/gw/add , with id: %d !!!!!!!!!!!", 

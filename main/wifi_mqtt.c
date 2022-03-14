@@ -74,8 +74,9 @@ void wifi_send_mqtt(char* sensorid, char* msg) {
     strftime(strftime_buf, sizeof(strftime_buf),  "%H:%M:%S-%d/%m", &timeinfo);
 
     sprintf(temp1, 
-        "{\"gwid\":\"%2x%2x%2x\", \"sensorid\":\"%s\", \"data\":\"%s\",\"time\":\"%s\"}", 
-        chipid[0], chipid[1], chipid[2], sensorid, msg, strftime_buf);  
+        "{\"gwid\":\"%2x%2x%2x%2x%2x%2x\", \"sensorid\":\"%s\", \"data\":\"%s\",\"time\":\"%s\"}", 
+        chipid[0], chipid[1], chipid[2], chipid[3], chipid[4], chipid[5],
+        sensorid, msg, strftime_buf);  
 
     /*
     ESP_LOGI(TAG, "The current date/time : %s", strftime_buf);
