@@ -78,14 +78,6 @@ void wifi_send_mqtt(char* sensorid, char* msg) {
         chipid[0], chipid[1], chipid[2], chipid[3], chipid[4], chipid[5],
         sensorid, msg, strftime_buf);  
 
-    /*
-    ESP_LOGI(TAG, "The current date/time : %s", strftime_buf);
-    strcat(temp, strftime_buf);
-    strcat(temp, ":");
-    strcat(temp, gDevIP); 
-    strcat(temp, ":");
-    */
-
 	int msg_id = esp_mqtt_client_publish(client, mqtt_topic, temp1, 0, 0, 0);
 	ESP_LOGI(TAG, "\nwifi_send_mqtt: %s on topic %s , with id: %d !!!", 
 						temp1, mqtt_topic, msg_id);
